@@ -1,0 +1,40 @@
+service:
+  name: reactlytics
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    SERVERLESS_STAGE: ${self:provider.stage}
+    DATABASE_TABLE_NAME: ${cf:reactlytics-database-${self:provider.stage}.ReactlyticsTableName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTimeToLive
+        - dynamodb:BatchWriteItem
+      Resource: ${cf:reactlytics-database-${self:provider.stage}.ReactlyticsTableArn}
+
+functions:
+  reactions:
+    handler: handler.reactions
+    events:
+      - http:
+          method: post
+          path: reactions
