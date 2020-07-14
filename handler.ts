@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import "source-map-support/register";
-import { startOfDay, format } from "date-fns";
+import { startOfDay, format, subDays } from "date-fns";
 import { DynamoDB } from "aws-sdk";
 var dynamodb = new DynamoDB({
   maxRetries: 5,
@@ -25,6 +25,41 @@ export const reactions: APIGatewayProxyHandler = async (event, _context) => {
   return {
     statusCode: 200,
     body: null,
+  };
+};
+
+export const report: APIGatewayProxyHandler = async (event, _context) => {
+  const numDays = event?.queryStringParameters?.numDays || 7;
+  const results = new Map();
+  for (let i = 0; i < numDays; i++) {
+    const pk = format(subDays(new Date(), i), "yyyy-MM-dd");
+    const response = await client
+      .query({
+        TableName: process.env.DATABASE_TABLE_NAME,
+        KeyConditionExpression: "pk = :pk",
+        ExpressionAttributeValues: {
+          ":pk": pk,
+        },
+        Limit: 1000,
+      })
+      .promise();
+
+    response.Items.forEach((item) => {
+      if (results.has(item.sk)) {
+        results.set(item.sk, results.get(item.sk) + item.reactionCount);
+      } else {
+        results.set(item.sk, item.reactionCount);
+      }
+    });
+  }
+
+  const sorted = [...results.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({ reaction: name, count }));
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(sorted),
   };
 };
 

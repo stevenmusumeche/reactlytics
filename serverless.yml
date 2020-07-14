@@ -39,3 +39,9 @@ functions:
       - http:
           method: post
           path: reactions
+  report:
+    handler: handler.report
+    events:
+      - http:
+        method: get
+        path: report
