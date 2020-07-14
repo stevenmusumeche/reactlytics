@@ -43,5 +43,5 @@ functions:
     handler: handler.report
     events:
       - http:
-        method: get
-        path: report
+          method: get
+          path: report
