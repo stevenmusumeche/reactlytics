@@ -38,8 +38,6 @@ function verify(body: { challenge: string }) {
 }
 
 async function handleReactionAdded(payload: ReactionAdded) {
-  console.log(process.env.DATABASE_TABLE_NAME);
-
   const ts = makeTimestamp(payload);
   const pk = format(ts, "yyyy-MM-dd");
   const sk = payload.event.reaction;
