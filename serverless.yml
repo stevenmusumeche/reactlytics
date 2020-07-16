@@ -8,6 +8,7 @@ custom:
 
 plugins:
   - serverless-webpack
+  - serverless-offline
 
 provider:
   name: aws
@@ -39,6 +40,12 @@ functions:
       - http:
           method: post
           path: reactions
+  slash:
+    handler: handler.slash
+    events:
+      - http:
+          method: post
+          path: slash
   report:
     handler: handler.report
     events:

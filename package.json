@@ -10,6 +10,7 @@
   "dependencies": {
     "aws-sdk": "^2.713.0",
     "date-fns": "^2.14.0",
+    "serverless-offline": "^6.4.0",
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
