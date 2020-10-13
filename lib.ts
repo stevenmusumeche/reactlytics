@@ -275,28 +275,28 @@ const helpBlocks = [
     type: "section",
     text: {
       type: "mrkdwn",
-      text: `• \`/emojireport emoji [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions over the last N days`,
+      text: `• \`/emojireport emoji [days=${DEFAULT_NUM_DAYS}]\` The top emoji reactions over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text: `• \`/emojireport people [numDays=${DEFAULT_NUM_DAYS}]\` The top reactors over the last N days`,
+      text: `• \`/emojireport people [days=${DEFAULT_NUM_DAYS}]\` The top reactors over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text: `• \`/emojireport @user [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by @user over the last N days`,
+      text: `• \`/emojireport @user [days=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by @user over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text: `• \`/emojireport :emoji: [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by :emoji: over the last N days`,
+      text: `• \`/emojireport :emoji: [days=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by :emoji: over the last N days`,
     },
   },
   {
