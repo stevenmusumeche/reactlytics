@@ -1,5 +1,5 @@
 {
-  "body": "token=KcNQ3BZYqnPfen2iXSjhKNwc&team_id=T02913TEC&team_domain=formidablelabs&channel_id=DD62ZJA6A&channel_name=directmessage&user_id=UD407HCDN&user_name=steven.musumeche&command=%2Femoji-report&text=:joy: 45&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT02913TEC%2F1240354476821%2Fusr3rQT15OK3uEHfSiIyautP&trigger_id=1226985042743.2307129488.80f096f507e3e22154aba49a4793930b",
+  "body": "token=KcNQ3BZYqnPfen2iXSjhKNwc&team_id=T02913TEC&team_domain=formidablelabs&channel_id=DD62ZJA6A&channel_name=directmessage&user_id=UD407HCDN&user_name=steven.musumeche&command=%2Femoji-report&text=%3C%40UD407HCDN%7Csteven.musumeche%3E&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FT02913TEC%2F1240354476821%2Fusr3rQT15OK3uEHfSiIyautP&trigger_id=1226985042743.2307129488.80f096f507e3e22154aba49a4793930b",
   "headers": {
     "Host": "36c8681b0c5f.ngrok.io",
     "User-Agent": "Slackbot 1.0 (+https://api.slack.com/robots)",

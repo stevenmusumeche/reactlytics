@@ -433,6 +433,8 @@ export async function buildTopReactionsForUserPayload(
   userId: string,
   numDays: number
 ) {
+  console.log({ userId, numDays });
+
   const data = await getTopReactionsForUser(userId, numDays);
   const blocks = data.slice(0, 10).flatMap((datum, i) => {
     const rank = String(i + 1).padStart(2, "0");

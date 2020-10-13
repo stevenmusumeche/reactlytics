@@ -88,14 +88,14 @@ export const slash: APIGatewayProxyHandler = async (event, _context) => {
 
   const userMatch = text
     .trim()
-    .match(/^<@(?<userId>U.*?)(\||>)\s?(?<numDays>[\d]{1,3})?$/);
+    .match(/^<@(?<userId>U.*?)(\||>)\s?(?<numDays>[\d]{1,3}$)?/);
   const emojiMatch = text
     .trim()
-    .match(/^:(?<emoji>.*?):\s?(?<numDays>[\d]{1,3})?$/);
-  const allEmojiMatch = text.trim().match(/^emojis?\s?(?<numDays>[\d]{1,3})?$/);
+    .match(/^:(?<emoji>.*?):\s?(?<numDays>[\d]{1,3}$)?/);
+  const allEmojiMatch = text.trim().match(/^emojis?\s?(?<numDays>[\d]{1,3}$)?/);
   const allUsersMatch = text
     .trim()
-    .match(/^(people|users)\s?(?<numDays>[\d]{1,3})?$/);
+    .match(/^(people|users)\s?(?<numDays>[\d]{1,3}$)?/);
 
   if (text.trim() === "help" || text.trim() === "") {
     body = buildHelpPayload();
