@@ -88,7 +88,7 @@ export const slash: APIGatewayProxyHandler = async (event, _context) => {
 
   const userMatch = text
     .trim()
-    .match(/^<@(?<userId>U.*?)(\||>)\s?(?<numDays>[\d]{1,3}$)?/);
+    .match(/^<@(?<userId>U.*?)(\||>).*?(?<numDays>[\d]{1,3})?$/);
   const emojiMatch = text
     .trim()
     .match(/^:(?<emoji>.*?):\s?(?<numDays>[\d]{1,3}$)?/);
