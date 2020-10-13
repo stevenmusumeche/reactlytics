@@ -12,6 +12,7 @@ import {
   buildTopReactionsForEmojiPayload,
   buildTopUsersPayload,
   buildHelpPayload,
+  DEFAULT_NUM_DAYS,
 } from "./lib";
 var dynamodb = new DynamoDB({
   maxRetries: 5,
@@ -40,7 +41,7 @@ export const reactions: APIGatewayProxyHandler = async (event, _context) => {
 };
 
 export const report: APIGatewayProxyHandler = async (event, _context) => {
-  const numDays = event?.queryStringParameters?.numDays || 7;
+  const numDays = event?.queryStringParameters?.numDays ?? DEFAULT_NUM_DAYS;
   const results = new Map();
   for (let i = 0; i < numDays; i++) {
     const pk = format(subDays(new Date(), i), "yyyy-MM-dd");
@@ -85,21 +86,33 @@ export const slash: APIGatewayProxyHandler = async (event, _context) => {
   );
   let body: any = buildErrorPayload();
 
-  const userMatch = text.trim().match(/^<@(?<userId>U.*?)(\||>)/);
-  const emojiMatch = text.trim().match(/^:(?<emoji>.*?):/);
+  const userMatch = text
+    .trim()
+    .match(/^<@(?<userId>U.*?)(\||>)\s?(?<numDays>[\d]{1,3})?$/);
+  const emojiMatch = text
+    .trim()
+    .match(/^:(?<emoji>.*?):\s?(?<numDays>[\d]{1,3})?$/);
+  const allEmojiMatch = text.trim().match(/^emojis?\s?(?<numDays>[\d]{1,3})?$/);
+  const allUsersMatch = text
+    .trim()
+    .match(/^(people|users)\s?(?<numDays>[\d]{1,3})?$/);
 
   if (text.trim() === "help" || text.trim() === "") {
     body = buildHelpPayload();
-  } else if (text.trim() === "emoji" || text.trim() === "emojis") {
-    body = await buildTopReactionsPayload();
-  } else if (text.trim() === "people" || text.trim() === "users") {
-    body = await buildTopUsersPayload();
+  } else if (allEmojiMatch) {
+    const numDays = allEmojiMatch.groups?.numDays ?? DEFAULT_NUM_DAYS;
+    body = await buildTopReactionsPayload(Number(numDays));
+  } else if (allUsersMatch) {
+    const numDays = allUsersMatch.groups?.numDays ?? DEFAULT_NUM_DAYS;
+    body = await buildTopUsersPayload(Number(numDays));
   } else if (userMatch) {
     const userId = userMatch.groups.userId;
-    body = await buildTopReactionsForUserPayload(userId);
+    const numDays = userMatch.groups?.numDays ?? DEFAULT_NUM_DAYS;
+    body = await buildTopReactionsForUserPayload(userId, Number(numDays));
   } else if (emojiMatch) {
     const emoji = emojiMatch.groups.emoji;
-    body = await buildTopReactionsForEmojiPayload(emoji);
+    const numDays = emojiMatch.groups?.numDays ?? DEFAULT_NUM_DAYS;
+    body = await buildTopReactionsForEmojiPayload(emoji, Number(numDays));
   }
 
   return {

@@ -6,7 +6,9 @@ var dynamodb = new DynamoDB({
 });
 export const client = new DynamoDB.DocumentClient({ service: dynamodb });
 
-const getTopReactions = async (numDays = 7) => {
+export const DEFAULT_NUM_DAYS = 7;
+
+const getTopReactions = async (numDays: number) => {
   const results = new Map();
   const items = await fetchData({ numDays });
   items.forEach((item) => {
@@ -36,7 +38,7 @@ const getTopReactions = async (numDays = 7) => {
   return sorted;
 };
 
-const getTopPeople = async (numDays = 7) => {
+const getTopPeople = async (numDays: number) => {
   const results = new Map();
   const items = await fetchData({ numDays });
 
@@ -88,7 +90,7 @@ const getTopPeople = async (numDays = 7) => {
   return sorted;
 };
 
-const getTopReactionsForUser = async (userId: string, numDays = 7) => {
+const getTopReactionsForUser = async (userId: string, numDays: number) => {
   const results = new Map();
   const items = await fetchData({ numDays });
   items.forEach((item) => {
@@ -115,7 +117,7 @@ const getTopReactionsForUser = async (userId: string, numDays = 7) => {
   return sorted;
 };
 
-const getTopReactionsForEmoji = async (emoji: string, numDays = 7) => {
+const getTopReactionsForEmoji = async (emoji: string, numDays: number) => {
   const results = new Map();
   const items = await fetchData({ emoji, numDays });
 
@@ -148,7 +150,7 @@ const getTopReactionsForEmoji = async (emoji: string, numDays = 7) => {
 
 const fetchData = async ({
   emoji,
-  numDays = 7,
+  numDays,
 }: {
   emoji?: string;
   numDays?: number;
@@ -273,31 +275,28 @@ const helpBlocks = [
     type: "section",
     text: {
       type: "mrkdwn",
-      text:
-        "• `/emojireport emoji` The top emoji reactions over the last 7 days",
+      text: `• \`/emojireport emoji [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text: "• `/emojireport people` The top reactors over the last 7 days",
+      text: `• \`/emojireport people [numDays=${DEFAULT_NUM_DAYS}]\` The top reactors over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text:
-        "• `/emojireport @user` The top emoji reactions by @user over the last 7 days",
+      text: `• \`/emojireport @user [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by @user over the last N days`,
     },
   },
   {
     type: "section",
     text: {
       type: "mrkdwn",
-      text:
-        "• `/emojireport :emoji:` The top emoji reactions by :emoji: over the last 7 days",
+      text: `• \`/emojireport :emoji: [numDays=${DEFAULT_NUM_DAYS}]\` The top emoji reactions by :emoji: over the last N days`,
     },
   },
   {
@@ -344,8 +343,8 @@ export function buildHelpPayload() {
   };
 }
 
-export async function buildTopUsersPayload() {
-  const data = await getTopPeople();
+export async function buildTopUsersPayload(numDays: number) {
+  const data = await getTopPeople(numDays);
   const blocks = data.slice(0, 10).flatMap((datum, i) => {
     const rank = String(i + 1).padStart(2, "0");
 
@@ -379,7 +378,7 @@ export async function buildTopUsersPayload() {
         type: "section",
         text: {
           type: "plain_text",
-          text: "The top reactors over the last 7 days are:",
+          text: `The top reactors over the last ${numDays} days are:`,
           emoji: true,
         },
       },
@@ -391,8 +390,8 @@ export async function buildTopUsersPayload() {
   };
 }
 
-export async function buildTopReactionsPayload() {
-  const data = await getTopReactions();
+export async function buildTopReactionsPayload(numDays: number) {
+  const data = await getTopReactions(numDays);
   const blocks = data.slice(0, 10).flatMap((datum, i) => {
     const rank = String(i + 1).padStart(2, "0");
     return [
@@ -421,7 +420,7 @@ export async function buildTopReactionsPayload() {
         type: "section",
         text: {
           type: "plain_text",
-          text: "The top emoji reactions over the last 7 days are:",
+          text: `The top emoji reactions over the last ${numDays} days are:`,
           emoji: true,
         },
       },
@@ -430,8 +429,11 @@ export async function buildTopReactionsPayload() {
   };
 }
 
-export async function buildTopReactionsForUserPayload(userId: string) {
-  const data = await getTopReactionsForUser(userId);
+export async function buildTopReactionsForUserPayload(
+  userId: string,
+  numDays: number
+) {
+  const data = await getTopReactionsForUser(userId, numDays);
   const blocks = data.slice(0, 10).flatMap((datum, i) => {
     const rank = String(i + 1).padStart(2, "0");
     return [
@@ -453,8 +455,8 @@ export async function buildTopReactionsForUserPayload(userId: string) {
         text: {
           type: "mrkdwn",
           text: data.length
-            ? `The top emoji reactions by <@${userId}> over the last 7 days are:`
-            : `No emoji reactions by <@${userId}> over the last 7 days :white_frowning_face:`,
+            ? `The top emoji reactions by <@${userId}> over the last ${numDays} days are:`
+            : `No emoji reactions by <@${userId}> over the last ${numDays} days :white_frowning_face:`,
         },
       },
       ...blocks,
@@ -462,8 +464,11 @@ export async function buildTopReactionsForUserPayload(userId: string) {
   };
 }
 
-export async function buildTopReactionsForEmojiPayload(emoji: string) {
-  const { total, sorted } = await getTopReactionsForEmoji(emoji);
+export async function buildTopReactionsForEmojiPayload(
+  emoji: string,
+  numDays: number
+) {
+  const { total, sorted } = await getTopReactionsForEmoji(emoji, numDays);
 
   const blocks = sorted.slice(0, 10).map((datum, i) => {
     const rank = String(i + 1).padStart(2, "0");
@@ -484,8 +489,8 @@ export async function buildTopReactionsForEmojiPayload(emoji: string) {
         text: {
           type: "mrkdwn",
           text: sorted.length
-            ? `:${emoji}: \`:${emoji}:\` was used *${total}* times over the last 7 day days. The top users are:`
-            : `:${emoji}: \`:${emoji}:\` was not used over the last 7 day days.`,
+            ? `:${emoji}: \`:${emoji}:\` was used *${total}* times over the last ${numDays} days. The top users are:`
+            : `:${emoji}: \`:${emoji}:\` was not used over the last ${numDays} days.`,
         },
       },
       ...blocks,
