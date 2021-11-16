@@ -8,7 +8,7 @@
     "cf:update-db": "aws cloudformation deploy --stack-name reactlytics-database-\"$STAGE\" --template-file ./database.yml --parameter-overrides StageParam=\"$STAGE\" --no-fail-on-empty-changeset"
   },
   "dependencies": {
-    "aws-sdk": "^2.713.0",
+    "aws-sdk": "^2.814.0",
     "date-fns": "^2.14.0",
     "serverless-offline": "^6.4.0",
     "source-map-support": "^0.5.10"
